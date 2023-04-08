@@ -24,7 +24,7 @@ struct BunnyPoint:BunnyPointProtocol{
         self.color = color
     }
 }
- let bunny = SwiftStanfordBunny<BunnyPoint>.instance()
+let bunny = SwiftStanfordBunny<BunnyPoint>.instance()
 let points = try! bunny.load()
 ```
 
