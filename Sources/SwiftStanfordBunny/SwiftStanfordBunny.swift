@@ -7,7 +7,7 @@ public protocol BunnyPointProtocol{
     init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<UInt8>)
 }
 public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
-    static func instance() -> SwiftStanfordBunny<T> {
+    public static func instance() -> SwiftStanfordBunny<T> {
         return SwiftStanfordBunny<T>()
     }
     private init(){
