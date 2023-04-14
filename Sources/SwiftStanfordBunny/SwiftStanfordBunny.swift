@@ -4,8 +4,7 @@ public protocol BunnyPointProtocol{
     var pos:SIMD3<Float> { get set }
     var normal:SIMD3<Float>{ get set }
     var color: SIMD4<UInt8>{ get set }
-    var faces:[[Int]]{get set}
-    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<UInt8>, faces:[[Int]])
+    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<UInt8>)
 }
 public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
     public static func instance() -> SwiftStanfordBunny<T> {
@@ -15,7 +14,7 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
         
     }
     class Obj{
-        func parse(data:Data)throws->[T]{
+        func parse(data:Data)throws->([T],[[Int]]){
             var vertices: [SIMD3<Float>] = []
             var normals: [SIMD3<Float>] = []
             var faces: [[Int]] = []
@@ -48,18 +47,18 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
             if vertices.count != normals.count {
                 throw NSError(domain: "vertices and normals count missmatch", code: 0)
             }
-            return (0..<vertices.count).map{ index in
-                return T(pos: vertices[index], normal: normals[index], color: simd_uchar4.zero,faces: faces)
-            }
+            return ((0..<vertices.count).map{ index in
+                return T(pos: vertices[index], normal: normals[index], color: simd_uchar4.zero)
+            },faces)
         }
     }
-    public func load() throws->[T] {
+    public func load() throws->(points:[T],faces:[[Int]]) {
         guard let objURL = Bundle.module.url(forResource: "bunny", withExtension: "obj") else {
             throw NSError(domain: "resource not found", code: 0)
         }
         let objData = try! Data(contentsOf: objURL)
         let obj = Obj()
-        let points = try! obj.parse(data: objData)
-        return points
+        let (points,faces) = try! obj.parse(data: objData)
+        return (points,faces)
     }
 }
