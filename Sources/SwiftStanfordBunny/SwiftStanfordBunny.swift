@@ -4,7 +4,8 @@ public protocol BunnyPointProtocol{
     var pos:SIMD3<Float> { get set }
     var normal:SIMD3<Float>{ get set }
     var color: SIMD4<UInt8>{ get set }
-    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<UInt8>)
+    var faces:[[Int]]{get set}
+    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<UInt8>, faces:[[Int]])
 }
 public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
     public static func instance() -> SwiftStanfordBunny<T> {
@@ -48,7 +49,7 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
                 throw NSError(domain: "vertices and normals count missmatch", code: 0)
             }
             return (0..<vertices.count).map{ index in
-                return T(pos: vertices[index], normal: normals[index], color: simd_uchar4.zero)
+                return T(pos: vertices[index], normal: normals[index], color: simd_uchar4.zero,faces: faces)
             }
         }
     }
