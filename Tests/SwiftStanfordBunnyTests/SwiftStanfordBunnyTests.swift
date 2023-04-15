@@ -4,11 +4,13 @@ import XCTest
 struct BunnyPoint:BunnyPointProtocol{
     var pos: SIMD3<Float>
     var normal: SIMD3<Float>
-    var color: SIMD4<UInt8>
-    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<UInt8>) {
+    var color: SIMD4<Float>
+    var uv: SIMD2<Float>
+    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<Float>,uv:SIMD2<Float>) {
         self.pos = pos
         self.normal = normal
         self.color = color
+        self.uv = uv
     }
 }
 
@@ -19,7 +21,7 @@ final class SwiftStanfordBunnyTests: XCTestCase {
         // results.
         let bunny = SwiftStanfordBunny<BunnyPoint>.instance()
         let (points,faces) = try! bunny.load()
-        XCTAssertEqual(points.count, 34817)
+        XCTAssertEqual(points.count, 37901)
         XCTAssertEqual(faces.count, 69630)
     }
 }

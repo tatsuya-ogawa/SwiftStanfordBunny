@@ -3,8 +3,9 @@ import simd
 public protocol BunnyPointProtocol{
     var pos:SIMD3<Float> { get set }
     var normal:SIMD3<Float>{ get set }
-    var color: SIMD4<UInt8>{ get set }
-    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<UInt8>)
+    var color: SIMD4<Float>{ get set }
+    var uv: SIMD2<Float>{ get set }
+    init(pos: SIMD3<Float>, normal: SIMD3<Float>, color: SIMD4<Float>,uv:SIMD2<Float>)
 }
 public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
     public static func instance() -> SwiftStanfordBunny<T> {
@@ -17,6 +18,7 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
         func parse(data:Data)throws->([T],[[Int]]){
             var vertices: [SIMD3<Float>] = []
             var normals: [SIMD3<Float>] = []
+            var uvs: [SIMD2<Float>] = []
             var faces: [[Int]] = []
             let string = String(data: data, encoding: .utf8)
             let lines = string!.split(separator: "\n")
@@ -40,6 +42,10 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
                         face.append(indices[0])
                     }
                     faces.append(face)
+                 case "vt":
+                    let x = Float(parts[1])!
+                    let y = Float(parts[2])!
+                    uvs.append(SIMD2<Float>(x, y))
                 default:
                     break
                 }
@@ -48,7 +54,7 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
                 throw NSError(domain: "vertices and normals count missmatch", code: 0)
             }
             return ((0..<vertices.count).map{ index in
-                return T(pos: vertices[index], normal: normals[index], color: simd_uchar4.zero)
+                return T(pos: vertices[index], normal: normals[index], color: simd_float4.zero,uv:uvs[index])
             },faces)
         }
     }
