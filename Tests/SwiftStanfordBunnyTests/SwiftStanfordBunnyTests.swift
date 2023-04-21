@@ -2,11 +2,11 @@ import XCTest
 @testable import SwiftStanfordBunny
 
 struct BunnyPoint:BunnyPointProtocol{
-    var pos: SIMD3<Float>
+    var posision: SIMD3<Float>
     var normal: SIMD3<Float>
     var uv: SIMD2<Float>
-    init(pos: SIMD3<Float>, normal: SIMD3<Float>, uv:SIMD2<Float>) {
-        self.pos = pos
+    init(position: SIMD3<Float>, normal: SIMD3<Float>, uv:SIMD2<Float>) {
+        self.posision = position
         self.normal = normal
         self.uv = uv
     }
