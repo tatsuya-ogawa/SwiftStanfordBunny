@@ -1,7 +1,8 @@
 import Foundation
 import simd
 public protocol BunnyPointProtocol{
-    init(position: SIMD3<Float>, normal: SIMD3<Float>,uv:SIMD2<Float>)
+    associatedtype Scalar where Scalar: SIMDScalar & LosslessStringConvertible
+    init(position: SIMD3<Scalar>, normal: SIMD3<Scalar>,uv:SIMD2<Scalar>)
 }
 public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
     public static func instance() -> SwiftStanfordBunny<T> {
@@ -11,10 +12,10 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
         
     }
     class Obj{
-        func parse(data:Data)throws->([T],[[Int]]){
-            var vertices: [SIMD3<Float>] = []
-            var normals: [SIMD3<Float>] = []
-            var uvs: [SIMD2<Float>] = []
+        func parse<Scalar>(data:Data)throws->([T],[[Int]]) where Scalar == T.Scalar{
+            var vertices: [SIMD3<Scalar>] = []
+            var normals: [SIMD3<Scalar>] = []
+            var uvs: [SIMD2<Scalar>] = []
             var faces: [[Int]] = []
             let string = String(data: data, encoding: .utf8)
             let lines = string!.split(separator: "\n")
@@ -22,15 +23,15 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
                 let parts = line.split(separator: " ")
                 switch parts[0] {
                 case "v":
-                    let x = Float(parts[1])!
-                    let y = Float(parts[2])!
-                    let z = Float(parts[3])!
-                    vertices.append(SIMD3<Float>(x, y, z))
+                    let x = Scalar(String(parts[1]))!
+                    let y = Scalar(String(parts[2]))!
+                    let z = Scalar(String(parts[3]))!
+                    vertices.append(SIMD3<Scalar>(x, y, z))
                 case "vn":
-                    let x = Float(parts[1])!
-                    let y = Float(parts[2])!
-                    let z = Float(parts[3])!
-                    normals.append(SIMD3<Float>(x, y, z))
+                    let x = Scalar(String(parts[1]))!
+                    let y = Scalar(String(parts[2]))!
+                    let z = Scalar(String(parts[3]))!
+                    normals.append(SIMD3<Scalar>(x, y, z))
                 case "f":
                     var face: [Int] = []
                     for part in parts[1...] {
@@ -39,9 +40,9 @@ public struct SwiftStanfordBunny<T:BunnyPointProtocol>{
                     }
                     faces.append(face)
                  case "vt":
-                    let x = Float(parts[1])!
-                    let y = Float(parts[2])!
-                    uvs.append(SIMD2<Float>(x, y))
+                    let x = Scalar(String(parts[1]))!
+                    let y = Scalar(String(parts[2]))!
+                    uvs.append(SIMD2<Scalar>(x, y))
                 default:
                     break
                 }
